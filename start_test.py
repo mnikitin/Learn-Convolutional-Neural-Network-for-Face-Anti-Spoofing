@@ -55,7 +55,7 @@ def prepare_svm_data(db_dir, client_list, net, mean):
 
 def train_classifier(data, labels, c):
     prob  = svm_problem(labels, data)
-    param = svm_parameter('-t 2 -c %f -b 1 -q' % c)
+    param = svm_parameter('-t 0 -c %f -b 1 -q' % c)
     model = svm_train(prob, param)
     return model
 
@@ -79,7 +79,7 @@ def save_results(scale, dev_eer, test_hter, test_eer, svm_c):
         os.makedirs('results')
     with open('results/casia__scale_' + str(scale) + '.txt', 'w') as f:
         for c in svm_c:
-            f.write('C = %d:\n' % c)
+            f.write('C = %f:\n' % c)
             f.write('\tEER-dev:\t%f (%f, %f, %f, %f, %f)\n' % (np.mean(dev_eer[c]), dev_eer[c][0], dev_eer[c][1], dev_eer[c][2], dev_eer[c][3], dev_eer[c][4]))
             f.write('\tHTER-test:\t%f (%f, %f, %f, %f, %f)\n' % (np.mean(test_hter[c]), test_hter[c][0], test_hter[c][1], test_hter[c][2], test_hter[c][3], test_hter[c][4]))
             f.write('\tEER-test:\t%f (%f, %f, %f, %f, %f)\n' % (np.mean(test_eer[c]), test_eer[c][0], test_eer[c][1], test_eer[c][2], test_eer[c][3], test_eer[c][4]))
@@ -87,7 +87,7 @@ def save_results(scale, dev_eer, test_hter, test_eer, svm_c):
 def print_results(scale, dev_eer, test_hter, test_eer, svm_c):
     print('CASIA: scale_' + str(scale) + ' results:')
     for c in svm_c:
-        print('C = %d:' % c)
+        print('C = %f:' % c)
         print('\tEER-dev:\t%f (%f, %f, %f, %f, %f)' % (np.mean(dev_eer[c]), dev_eer[c][0], dev_eer[c][1], dev_eer[c][2], dev_eer[c][3], dev_eer[c][4]))
         print('\tHTER-test:\t%f (%f, %f, %f, %f, %f)' % (np.mean(test_hter[c]), test_hter[c][0], test_hter[c][1], test_hter[c][2], test_hter[c][3], test_hter[c][4]))
         print('\tEER-test:\t%f (%f, %f, %f, %f, %f)' % (np.mean(test_eer[c]), test_eer[c][0], test_eer[c][1], test_eer[c][2], test_eer[c][3], test_eer[c][4]))
@@ -119,7 +119,7 @@ def test_net_casia(data_dir, experiments_dir, folds_num, svm_c):
             data_test, labels_test = prepare_svm_data(db_dir + '/test_release', client_list_test, net, mean)
             # train model and estimate quality
             for c in svm_c:
-                print("Scale: %.1f; Fold: %d. Training and estimation SVM with C=%d ..." % (scale, k, c))
+                print("Scale: %.1f; Fold: %d. Training and estimation SVM with C=%f ..." % (scale, k, c))
                 model = train_classifier(data_train, labels_train, c)
                 cur_eer_dev, thr = estimate_eer(data_dev, labels_dev, model)
                 cur_hter_test = estimate_hter(data_test, labels_test, model, thr)
@@ -133,7 +133,7 @@ def test_net_casia(data_dir, experiments_dir, folds_num, svm_c):
 
 
 def main(argc, argv):
-    svm_c = [2 ** i for i in range(0, 17, 2)]
+    svm_c = [2 ** i for i in range(-10, 11, 2)]
     test_net_casia('data/casia', 'experiments/casia', 5, svm_c)
 
 
