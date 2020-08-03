@@ -3,7 +3,9 @@ Implementation of "[Learn Convolutional Neural Network for Face Anti-Spoofing](h
 
 ## Results
 
-### CASIA intra-test results
+### CASIA intra-test
+Raw dataset: https://pan.baidu.com/s/15HyX7tizCCuwN9BKiV9_zA (password: h5un)
+
 <table>
   <tr>
     <th rowspan="2"></th>
