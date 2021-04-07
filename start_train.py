@@ -51,7 +51,7 @@ def train_net_casia(data_dir, scale, k):
     config['train_db'] = train_list_fname + '.rec'
     config['val_db'] = dev_list_fname + '.rec'
     with open('%s/mean_std__scale_%s.txt' % (data_dir, str(scale)), 'r') as f:
-        config['data_params']['mean'] = map(float, f.readline().split())
+        config['data_params']['mean'] = [float(item) for item in f.readline().split()]
     config['experiment_dir'] = 'experiments/casia/' + experiment_str
     # start experiment
     start_experiment(config)
